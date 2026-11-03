@@ -7,11 +7,20 @@ exports.handler = async (event) => {
   if (event.httpMethod === "OPTIONS") return { statusCode: 204, headers };
   const key = process.env.YOUTUBE_API_KEY;
   if (!key) return { statusCode: 503, headers, body: JSON.stringify({ error: "YouTube catalogue is not configured yet. Add YOUTUBE_API_KEY in Netlify environment variables." }) };
-  const q = String(event.queryStringParameters?.q || "free full movies").trim().slice(0, 100);
+  const requestedCategory = String(event.queryStringParameters?.q || "popular").trim().slice(0, 100);
+  const categoryQueries = {
+    popular: "free full length movies official channel",
+    nollywood: "Nollywood full length movie official channel",
+    hollywood: "Hollywood free full length movie official channel",
+    african: "African cinema full length movie official channel",
+    classics: "public domain classic feature film full movie",
+    documentaries: "free full length documentary official channel"
+  };
+  const q = categoryQueries[requestedCategory.toLowerCase()] || requestedCategory;
   const pageToken = String(event.queryStringParameters?.pageToken || "").slice(0, 200);
   try {
     const params = new URLSearchParams({
-      part: "snippet", type: "video", maxResults: "24", q: q + " full movie",
+      part: "snippet", type: "video", maxResults: "24", q,
       videoEmbeddable: "true", videoSyndicated: "true", videoDuration: "long",
       safeSearch: "moderate", order: "relevance", key
     });
