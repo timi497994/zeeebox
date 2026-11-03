@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZEEBOX | Your World of Movies</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090b12;color:#fff;font-family:Arial,sans-serif}
+header{padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:#10131d;position:sticky;top:0;z-index:5}
+.logo{font-size:27px;font-weight:900;letter-spacing:1px}
+.logo span{color:#9b6cff}
+nav a{color:#ddd;text-decoration:none;margin:0 10px;font-size:14px}
+.search{padding:10px;border-radius:20px;background:#202536;border:1px solid #343b50;color:white;width:160px}
+.hero{min-height:400px;padding:65px 7%;display:flex;align-items:center;background:linear-gradient(90deg,#090b12 5%,#090b12d9 50%,#090b1240),url('https://image.tmdb.org/t/p/original/8b8R8l88Qje9dn9OE8PY05NijlP.jpg') center/cover}
+.hero-content{max-width:550px}
+.tag{color:#b99aff;font-weight:bold;letter-spacing:2px}
+.hero h1{font-size:clamp(38px,7vw,65px);margin:12px 0}
+.hero p{color:#c5c9d5;line-height:1.7}
+button{cursor:pointer;border:0;border-radius:8px;padding:12px 20px;font-weight:bold}
+.primary{background:#8957ed;color:white}
+.secondary{background:#34384a;color:white;margin-left:8px}
+main{padding:20px 5%}
+h2{font-size:23px}
+.categories{display:flex;gap:10px;overflow:auto;padding:8px 0 20px}
+.category{background:#1c2231;color:white;border:1px solid #343b50;border-radius:25px;white-space:nowrap}
+.category.active{background:#8957ed}
+.movies{display:grid;grid-template-columns:repeat(5,1fr);gap:18px 13px}
+.movie{cursor:pointer;min-width:0}
+.poster{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#202536}
+.movie h3{font-size:14px;margin:8px 0 4px}
+.movie small{color:#9da5b7}
+.rating{color:#ffc75e;font-size:12px}
+footer{text-align:center;padding:30px;color:#9299aa;border-top:1px solid #242a39;margin-top:30px}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:10;align-items:center;justify-content:center;padding:18px}
+.modal.show{display:flex}
+.dialog{background:#171d2b;border-radius:15px;padding:22px;max-width:450px;width:100%;max-height:90vh;overflow:auto}
+.dialog img{width:130px;border-radius:9px;float:left;margin:0 18px 12px 0}
+.dialog p{color:#c5c9d5;line-height:1.6}
+.close{float:right;background:#34384a;color:white}
+@media(max-width:800px){.movies{grid-template-columns:repeat(3,1fr)}nav a{display:none}}
+@media(max-width:480px){.movies{grid-template-columns:repeat(2,1fr)}.hero{min-height:350px;padding:35px 6%}.search{width:125px}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">ZEE<span>BOX</span></div>
+ <nav><a href="#">Home</a><a href="#movies">Movies</a><a href="#categories">Categories</a></nav>
+ <input class="search" id="search" placeholder="Search movies...">
+</header>
+
+<section class="hero">
+ <div class="hero-content">
+  <div class="tag">WELCOME TO ZEEBOX</div>
+  <h1>Your World of Movies.</h1>
+  <p>Discover exciting movies, explore different genres and find your next favourite story. Everything starts here.</p>
+  <button class="primary" onclick="document.getElementById('movies').scrollIntoView({behavior:'smooth'})">Explore Movies →</button>
+  <button class="secondary" onclick="showSaved()">My List</button>
+ </div>
+</section>
+
+<main>
+ <h2 id="categories">Explore Categories</h2>
+ <div class="categories" id="categoriesList"></div>
+ <div style="display:flex;justify-content:space-between;align-items:center">
+  <h2 id="sectionTitle">Popular Movies</h2>
+  <span id="total" style="color:#9da5b7;font-size:12px"></span>
+ </div>
+ <section class="movies" id="movies"></section>
+</main>
+
+<footer>
+ <div class="logo">ZEE<span>BOX</span></div>
+ <p>Your World of Movies.</p>
+ <small>© 2026 ZEEBOX. Movie discovery platform.</small>
+</footer>
+
+<div class="modal" id="modal">
+ <div class="dialog">
+  <button class="close" onclick="closeMovie()">✕</button>
+  <div style="clear:both"></div>
+  <img id="detailImage" alt="Movie poster">
+  <h2 id="detailTitle"></h2>
+  <p id="detailInfo"></p>
+  <p id="detailDescription"></p>
+  <button class="primary" id="trailerButton">▶ Find Trailer</button>
+  <button class="secondary" id="saveButton">＋ My List</button>
+  <p style="clear:both;font-size:11px">Watch through authorized streaming services. ZEEBOX does not host copyrighted films.</p>
+ </div>
+</div>
+
+<script>
+const films=[
+ {id:1,title:"Dune: Part Two",year:2024,genre:"Sci-Fi",rating:"8.5",image:"https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",description:"Paul Atreides joins Chani and the Fremen on an epic journey across the desert."},
+ {id:2,title:"Inside Out 2",year:2024,genre:"Animation",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESC9E.jpg",description:"Riley experiences new emotions as she enters another chapter of life."},
+ {id:3,title:"Deadpool & Wolverine",year:2024,genre:"Action",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",description:"Two unlikely heroes team up for a spectacular adventure."},
+ {id:4,title:"Oppenheimer",year:2023,genre:"Drama",rating:"8.3",image:"https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJInt.jpg",description:"The story of the scientist behind the atomic bomb."},
+ {id:5,title:"Spider-Man: Across the Spider-Verse",year:2023,genre:"Animation",rating:"8.6",image:"https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xjdod.jpg",description:"Miles Morales travels across the multiverse."},
+ {id:6,title:"The Batman",year:2022,genre:"Action",rating:"7.8",image:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",description:"Batman investigates a mystery in Gotham City."},
+ {id:7,title:"Top Gun: Maverick",year:2022,genre:"Action",rating:"8.2",image:"https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",description:"Maverick trains a new generation of pilots."},
+ {id:8,title:"Barbie",year:2023,genre:"Comedy",rating:"6.8",image:"https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",description:"Barbie sets out on a journey of self-discovery."},
+ {id:9,title:"The Creator",year:2023,genre:"Sci-Fi",rating:"7.0",image:"https://image.tmdb.org/t/p/w500/vBZ0qvaRxqEhZwl6LWmruh.jpg",description:"Humanity faces a future shaped by artificial intelligence."},
+ {id:10,title:"John Wick: Chapter 4",year:2023,genre:"Action",rating:"7.7",image:"https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",description:"John Wick fights powerful enemies to win his freedom."},
+ {id:11,title:"Wish",year:2023,genre:"Animation",rating:"5.6",image:"https://image.tmdb.org/t/p/w500/AcoVfiv1rrWOmAdpnAMnM56ki19.jpg",description:"A young woman makes a wish that changes her world."},
+ {id:12,title:"A Quiet Place: Day One",year:2024,genre:"Horror",rating:"6.3",image:"https://image.tmdb.org/t/p/w500/hU42CRk14JuPEdqZG3AWmagiPAP.jpg",description:"A woman fights to survive when terrifying creatures arrive."}
+];
+let genre="All",saved=JSON.parse(localStorage.getItem("zeeboxSaved")||"[]"),selected=null;
+const genres=["All","Action","Comedy","Drama","Animation","Sci-Fi","Horror"];
+function categories(){
+ document.getElementById("categoriesList").innerHTML=genres.map(g=>`<button class="category ${g===genre?'active':''}" onclick="setGenre('${g}')">${g}</button>`).join("");
+}
+function render(){
+ let q=document.getElementById("search").value.toLowerCase();
+ let list=films.filter(f=>(genre==="All"||f.genre===genre)&&f.title.toLowerCase().includes(q));
+ document.getElementById("total").textContent=list.length+" titles";
+ document.getElementById("movies").innerHTML=list.length?list.map(f=>`<article class="movie" onclick="openMovie(${f.id})"><img class="poster" src="${f.image}" alt="${f.title}" loading="lazy"><div class="rating">★ ${f.rating}</div><h3>${f.title}</h3><small>${f.year} · ${f.genre}</small></article>`).join(""):"<p>No movies found.</p>";
+}
+function setGenre(g){genre=g;document.getElementById("sectionTitle").textContent=g==="All"?"Popular Movies":g+" Movies";categories();render();}
+function openMovie(id){
+ selected=films.find(f=>f.id===id);
+ document.getElementById("detailImage").src=selected.image;
+ document.getElementById("detailTitle").textContent=selected.title;
+ document.getElementById("detailInfo").textContent=selected.year+" · "+selected.genre+" · ★ "+selected.rating;
+ document.getElementById("detailDescription").textContent=selected.description;
+ document.getElementById("saveButton").textContent=saved.includes(id)?"✓ Saved":"＋ My List";
+ document.getElementById("trailerButton").onclick=()=>window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(selected.title+" official trailer"),"_blank");
+ document.getElementById("saveButton").onclick=()=>{
+  saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];
+  localStorage.setItem("zeeboxSaved",JSON.stringify(saved));
+  document.getElementById("saveButton").textContent=saved.includes(id)?"✓ Saved":"＋ My List";
+ };
+ document.getElementById("modal").classList.add("show");
+}
+function closeMovie(){document.getElementById("modal").classList.remove("show");}
+function showSaved(){
+ let list=films.filter(f=>saved.includes(f.id));
+ document.getElementById("sectionTitle").textContent="My Watchlist";
+ document.getElementById("total").textContent=list.length+" saved";
+ document.getElementById("movies").innerHTML=list.length?list.map(f=>`<article class="movie" onclick="openMovie(${f.id})"><img class="poster" src="${f.image}"><h3>${f.title}</h3><small>${f.year}</small></article>`).join(""):"<p>Your watchlist is empty. Save a movie to add it here.</p>";
+ document.getElementById("movies").scrollIntoView({behavior:"smooth"});
+}
+document.getElementById("search").addEventListener("input",render);
+categories();render();
+</script>
+</body>
+</html>
