@@ -27,16 +27,20 @@ main{padding:26px 5% 55px}.toolbar{display:flex;justify-content:space-between;al
 const $=id=>document.getElementById(id);
 let page=1,lastQuery="",activeUrl="";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const baseQuery="mediatype:movies AND collection:feature_films";
+const baseQuery="mediatype:movies";
 function showState(s){$("grid").innerHTML='<div class="state">'+s+'</div>';}
 function thumb(id){return "https://archive.org/services/img/"+encodeURIComponent(id);}
 async function loadItems(q="",p=1){
  page=p;lastQuery=q;$("heading").textContent=q?'Search results for "'+q+'"':"Browse the movie collection";$("status").textContent="Loading…";$("searchBtn").disabled=true;showState("Searching the movie collection…");
  try{
-  const expression=baseQuery+(q?' AND title:('+q.replace(/[():\[\]{}"]/g," ").trim()+')':"");
-  const params=new URLSearchParams({q:expression,"fl[]":"identifier,title,year,description",rows:"24",page:String(p),output:"json"});
+  const clean=q.replace(/[\u0000-\u001f]/g," ").replace(/["\\\\]/g," ").replace(/\s+/g," ").trim();
+  const expression=baseQuery+(clean ? ' AND title:"'+clean+'"' : "");
+  const params=new URLSearchParams();params.set("q",expression);
+  ["identifier","title","year","description"].forEach(field=>params.append("fl[]",field));
+  params.set("rows","24");params.set("start",String((p-1)*24));params.set("output","json");params.append("sort[]","downloads desc");
   const res=await fetch("https://archive.org/advancedsearch.php?"+params.toString());if(!res.ok)throw Error("Catalogue request failed");
-  const data=await res.json();const docs=data.response?.docs||[];const total=data.response?.numFound||0;
+  const data=await res.json();if(data.responseHeader?.status!==0)throw Error("Archive search returned an error");
+  const docs=data.response?.docs||[];const total=Number(data.response?.numFound||0);
   $("status").textContent=total.toLocaleString()+" catalogue results · page "+p;
   $("prev").disabled=p<=1;$("next").disabled=p*24>=total;
   if(!docs.length){showState("No titles found. Try a shorter title or a different search.");return;}
@@ -54,7 +58,7 @@ async function openFilm(id,title){
   const file=files.find(f=>/\.mp4$/i.test(f.name||""))||files[0];
   if(!file){$("rightsText").textContent="No compatible MP4 video file was listed for this item. Open the Archive item page to see its available formats.";addLink("Open Archive item","https://archive.org/details/"+encodeURIComponent(id),"external");return;}
   if(!allowed){$("rightsText").textContent="A compatible video file exists, but this item's metadata does not clearly identify a public-domain or Creative Commons licence. ZEEBOX will not provide direct playback or download for an item with unclear rights.";addLink("Check rights on Archive","https://archive.org/details/"+encodeURIComponent(id),"external");return;}
-  const url="https://archive.org/download/"+encodeURIComponent(id)+"/"+file.name;activeUrl=url;
+  const url="https://archive.org/download/"+encodeURIComponent(id)+"/"+file.name.split("/").map(encodeURIComponent).join("/");activeUrl=url;
   $("video").src=url;$("video").load();$("rightsText").textContent="Licence recorded by the Archive: "+license+". Please check the item page for the exact terms and attribution requirements before sharing.";
   addLink("Download movie",url,"download");addLink("Open source item","https://archive.org/details/"+encodeURIComponent(id),"external");
  }catch(e){$("rightsText").textContent="Could not retrieve this film's file and licence details. Please try another title.";addLink("Open Archive item","https://archive.org/details/"+encodeURIComponent(id),"external");}
