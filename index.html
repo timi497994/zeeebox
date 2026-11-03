@@ -1,146 +1,135 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZEEBOX | Your World of Movies</title>
+<meta name="theme-color" content="#080910">
+<meta name="description" content="Discover movies, explore genres and build your personal watchlist on ZEEBOX.">
+<title>ZEEBOX — Your World of Movies</title>
 <style>
+:root{color-scheme:dark;--bg:#080910;--panel:#111421;--panel2:#191e2e;--text:#f7f7fb;--muted:#a5aabd;--purple:#9865ff;--purple2:#7040d8;--line:#292e40}
 *{box-sizing:border-box}
-body{margin:0;background:#090b12;color:#fff;font-family:Arial,sans-serif}
-header{padding:18px 5%;display:flex;align-items:center;justify-content:space-between;background:#10131d;position:sticky;top:0;z-index:5}
-.logo{font-size:27px;font-weight:900;letter-spacing:1px}
-.logo span{color:#9b6cff}
-nav a{color:#ddd;text-decoration:none;margin:0 10px;font-size:14px}
-.search{padding:10px;border-radius:20px;background:#202536;border:1px solid #343b50;color:white;width:160px}
-.hero{min-height:400px;padding:65px 7%;display:flex;align-items:center;background:linear-gradient(90deg,#090b12 5%,#090b12d9 50%,#090b1240),url('https://image.tmdb.org/t/p/original/8b8R8l88Qje9dn9OE8PY05NijlP.jpg') center/cover}
-.hero-content{max-width:550px}
-.tag{color:#b99aff;font-weight:bold;letter-spacing:2px}
-.hero h1{font-size:clamp(38px,7vw,65px);margin:12px 0}
-.hero p{color:#c5c9d5;line-height:1.7}
-button{cursor:pointer;border:0;border-radius:8px;padding:12px 20px;font-weight:bold}
-.primary{background:#8957ed;color:white}
-.secondary{background:#34384a;color:white;margin-left:8px}
-main{padding:20px 5%}
-h2{font-size:23px}
-.categories{display:flex;gap:10px;overflow:auto;padding:8px 0 20px}
-.category{background:#1c2231;color:white;border:1px solid #343b50;border-radius:25px;white-space:nowrap}
-.category.active{background:#8957ed}
-.movies{display:grid;grid-template-columns:repeat(5,1fr);gap:18px 13px}
-.movie{cursor:pointer;min-width:0}
-.poster{width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:10px;background:#202536}
-.movie h3{font-size:14px;margin:8px 0 4px}
-.movie small{color:#9da5b7}
-.rating{color:#ffc75e;font-size:12px}
-footer{text-align:center;padding:30px;color:#9299aa;border-top:1px solid #242a39;margin-top:30px}
-.modal{display:none;position:fixed;inset:0;background:#000d;z-index:10;align-items:center;justify-content:center;padding:18px}
-.modal.show{display:flex}
-.dialog{background:#171d2b;border-radius:15px;padding:22px;max-width:450px;width:100%;max-height:90vh;overflow:auto}
-.dialog img{width:130px;border-radius:9px;float:left;margin:0 18px 12px 0}
-.dialog p{color:#c5c9d5;line-height:1.6}
-.close{float:right;background:#34384a;color:white}
-@media(max-width:800px){.movies{grid-template-columns:repeat(3,1fr)}nav a{display:none}}
-@media(max-width:480px){.movies{grid-template-columns:repeat(2,1fr)}.hero{min-height:350px;padding:35px 6%}.search{width:125px}}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif}
+button,input{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}
+header{height:76px;padding:0 5%;display:flex;align-items:center;gap:28px;background:rgba(12,14,24,.94);border-bottom:1px solid #ffffff0d;position:sticky;top:0;z-index:20;backdrop-filter:blur(16px)}
+.logo{font-size:27px;font-weight:900;letter-spacing:1px;white-space:nowrap}.logo span{color:var(--purple)}
+nav{display:flex;align-items:center;gap:22px}nav a{color:#c9ccda;text-decoration:none;font-size:14px}nav a:hover,nav a:focus{color:#fff}
+.header-tools{margin-left:auto;display:flex;align-items:center;gap:12px}
+.search-wrap{position:relative}.search{width:min(230px,32vw);padding:11px 14px 11px 38px;border-radius:22px;background:#1a1e2d;border:1px solid #34394c;color:#fff;outline:none}.search:focus{border-color:var(--purple)}.search-icon{position:absolute;left:13px;top:10px;color:#aab0c2}
+.icon-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel2);color:#fff;font-size:17px}
+.hero{min-height:455px;padding:65px 7%;display:flex;align-items:center;position:relative;background:linear-gradient(90deg,#080910 3%,#080910ed 37%,#08091075 75%,#08091040),linear-gradient(0deg,#080910 0%,transparent 35%),url('https://image.tmdb.org/t/p/original/8b8R8l88Qje9dn9OE8PY05NijlP.jpg') center 35%/cover}
+.hero-content{max-width:590px}.eyebrow{color:#c2a7ff;font-size:12px;font-weight:800;letter-spacing:3px}.hero h1{font-size:clamp(42px,7vw,72px);line-height:1.02;margin:14px 0}.hero p{max-width:500px;color:#c5c9d5;line-height:1.75;font-size:15px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{border:0;border-radius:8px;padding:12px 19px;font-weight:750;transition:transform .2s,background .2s}.btn:hover{transform:translateY(-2px)}.primary{background:var(--purple);color:#fff}.primary:hover{background:var(--purple2)}.secondary{background:#34384a;color:#fff}.outline{background:transparent;border:1px solid #74798c;color:#fff}
+main{padding:24px 5% 48px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:12px 0 14px}.section-head h2{font-size:22px;margin:0}.muted{color:var(--muted);font-size:12px}
+.categories{display:flex;gap:9px;overflow-x:auto;padding:5px 0 22px;scrollbar-width:thin}.category{background:#171b29;color:#d6d8e2;border:1px solid #30364a;border-radius:24px;padding:9px 16px;white-space:nowrap;font-size:13px}.category.active,.category:hover{background:var(--purple2);border-color:var(--purple2);color:#fff}
+.movies{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:25px 15px}
+.movie{min-width:0;cursor:pointer;transition:transform .2s}.movie:hover{transform:translateY(-5px)}.poster-wrap{position:relative;overflow:hidden;border-radius:10px;background:#202536;aspect-ratio:2/3}.poster{width:100%;height:100%;display:block;object-fit:cover;transition:transform .35s}.movie:hover .poster{transform:scale(1.045)}.poster-overlay{position:absolute;inset:auto 0 0;padding:30px 10px 10px;background:linear-gradient(transparent,#080910d9);opacity:0;transition:opacity .2s}.movie:hover .poster-overlay{opacity:1}.quick-view{font-size:12px;font-weight:700}.rating{color:#ffc75e;font-size:12px;margin-top:9px}.movie h3{font-size:14px;margin:6px 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.movie small{color:var(--muted);font-size:12px}
+.empty{grid-column:1/-1;text-align:center;padding:45px 15px;background:var(--panel);border:1px solid var(--line);border-radius:12px;color:var(--muted)}
+footer{padding:32px 5%;color:#9299aa;border-top:1px solid #242a39;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}footer p{margin:5px 0;font-size:13px}footer small{font-size:11px}
+.modal{display:none;position:fixed;inset:0;background:#000d;z-index:40;align-items:center;justify-content:center;padding:18px}.modal.show{display:flex}.dialog{position:relative;background:#151a28;border:1px solid #34394b;border-radius:16px;padding:24px;max-width:590px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 80px #0009}.dialog:after{content:"";display:block;clear:both}.dialog img{width:145px;aspect-ratio:2/3;object-fit:cover;border-radius:9px;float:left;margin:0 20px 12px 0}.dialog h2{margin:8px 35px 8px 0}.dialog p{color:#c5c9d5;line-height:1.6}.close{position:absolute;right:15px;top:15px;width:34px;height:34px;border:0;border-radius:50%;background:#34384a;color:white;font-size:18px}.dialog-actions{display:flex;gap:9px;flex-wrap:wrap;clear:both;padding-top:8px}.notice{font-size:11px!important;color:#9299aa!important;clear:both;padding-top:12px}
+@media(max-width:1050px){.movies{grid-template-columns:repeat(5,minmax(0,1fr))}}
+@media(max-width:760px){header{height:68px;padding:0 4%;gap:14px}.logo{font-size:23px}nav{gap:12px}nav a{font-size:12px}.movies{grid-template-columns:repeat(4,minmax(0,1fr))}.hero{min-height:390px;padding:45px 6%}}
+@media(max-width:560px){header{flex-wrap:wrap;height:auto;min-height:66px;padding:12px 4%;gap:10px}.header-tools{margin-left:auto}.search{width:145px}.nav-home{display:none}.movies{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 12px}.hero{min-height:370px;background-position:58% center}.hero p{font-size:14px}main{padding-left:4%;padding-right:4%}.section-head h2{font-size:19px}.dialog img{width:105px;margin-right:13px}.dialog{padding:18px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important}}
 </style>
 </head>
 <body>
 <header>
- <div class="logo">ZEE<span>BOX</span></div>
- <nav><a href="#">Home</a><a href="#movies">Movies</a><a href="#categories">Categories</a></nav>
- <input class="search" id="search" placeholder="Search movies...">
+ <a class="logo" href="#" aria-label="ZEEBOX home" style="text-decoration:none;color:inherit">ZEE<span>BOX</span></a>
+ <nav aria-label="Main navigation"><a class="nav-home" href="#">Home</a><a href="#movies">Movies</a><a href="#categories">Genres</a></nav>
+ <div class="header-tools">
+  <label class="search-wrap"><span class="search-icon" aria-hidden="true">⌕</span><input class="search" id="search" type="search" placeholder="Search movies..." aria-label="Search movies"></label>
+  <button class="icon-btn" id="myListTop" type="button" aria-label="Show my watchlist" title="My List">♡</button>
+ </div>
 </header>
-
-<section class="hero">
+<section class="hero" aria-labelledby="heroTitle">
  <div class="hero-content">
-  <div class="tag">WELCOME TO ZEEBOX</div>
-  <h1>Your World of Movies.</h1>
-  <p>Discover exciting movies, explore different genres and find your next favourite story. Everything starts here.</p>
-  <button class="primary" onclick="document.getElementById('movies').scrollIntoView({behavior:'smooth'})">Explore Movies →</button>
-  <button class="secondary" onclick="showSaved()">My List</button>
+  <div class="eyebrow">WELCOME TO ZEEBOX</div>
+  <h1 id="heroTitle">Your World of Movies.</h1>
+  <p>Discover exciting movies, explore different genres and find your next favourite story. Your next movie night starts here.</p>
+  <div class="actions"><button class="btn primary" id="exploreBtn" type="button">Explore Movies&nbsp; →</button><button class="btn secondary" id="heroListBtn" type="button">♡&nbsp; My List</button></div>
  </div>
 </section>
-
 <main>
- <h2 id="categories">Explore Categories</h2>
- <div class="categories" id="categoriesList"></div>
- <div style="display:flex;justify-content:space-between;align-items:center">
-  <h2 id="sectionTitle">Popular Movies</h2>
-  <span id="total" style="color:#9da5b7;font-size:12px"></span>
- </div>
- <section class="movies" id="movies"></section>
+ <div class="section-head"><h2 id="categories">Explore Genres</h2><span class="muted">Find your next favourite</span></div>
+ <div class="categories" id="categoriesList" aria-label="Filter by genre"></div>
+ <div class="section-head"><h2 id="sectionTitle">Popular Movies</h2><span class="muted" id="total" aria-live="polite"></span></div>
+ <section class="movies" id="movies" aria-label="Movie catalogue"></section>
 </main>
-
-<footer>
- <div class="logo">ZEE<span>BOX</span></div>
- <p>Your World of Movies.</p>
- <small>© 2026 ZEEBOX. Movie discovery platform.</small>
-</footer>
-
-<div class="modal" id="modal">
+<footer><div><div class="logo">ZEE<span>BOX</span></div><p>Your World of Movies.</p></div><small>© 2026 ZEEBOX. Movie discovery platform.</small></footer>
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
  <div class="dialog">
-  <button class="close" onclick="closeMovie()">✕</button>
-  <div style="clear:both"></div>
+  <button class="close" id="closeModal" type="button" aria-label="Close movie details">×</button>
   <img id="detailImage" alt="Movie poster">
-  <h2 id="detailTitle"></h2>
-  <p id="detailInfo"></p>
-  <p id="detailDescription"></p>
-  <button class="primary" id="trailerButton">▶ Find Trailer</button>
-  <button class="secondary" id="saveButton">＋ My List</button>
-  <p style="clear:both;font-size:11px">Watch through authorized streaming services. ZEEBOX does not host copyrighted films.</p>
+  <h2 id="detailTitle"></h2><p id="detailInfo"></p><p id="detailDescription"></p>
+  <div class="dialog-actions"><button class="btn primary" id="trailerButton" type="button">▶ Find Trailer</button><button class="btn secondary" id="saveButton" type="button">＋ My List</button></div>
+  <p class="notice">ZEEBOX currently provides movie discovery and trailer search. Full-length playback will be added when authorized streaming sources are integrated.</p>
  </div>
 </div>
-
 <script>
+"use strict";
 const films=[
- {id:1,title:"Dune: Part Two",year:2024,genre:"Sci-Fi",rating:"8.5",image:"https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",description:"Paul Atreides joins Chani and the Fremen on an epic journey across the desert."},
- {id:2,title:"Inside Out 2",year:2024,genre:"Animation",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESC9E.jpg",description:"Riley experiences new emotions as she enters another chapter of life."},
- {id:3,title:"Deadpool & Wolverine",year:2024,genre:"Action",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",description:"Two unlikely heroes team up for a spectacular adventure."},
- {id:4,title:"Oppenheimer",year:2023,genre:"Drama",rating:"8.3",image:"https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJInt.jpg",description:"The story of the scientist behind the atomic bomb."},
- {id:5,title:"Spider-Man: Across the Spider-Verse",year:2023,genre:"Animation",rating:"8.6",image:"https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xjdod.jpg",description:"Miles Morales travels across the multiverse."},
- {id:6,title:"The Batman",year:2022,genre:"Action",rating:"7.8",image:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",description:"Batman investigates a mystery in Gotham City."},
- {id:7,title:"Top Gun: Maverick",year:2022,genre:"Action",rating:"8.2",image:"https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",description:"Maverick trains a new generation of pilots."},
- {id:8,title:"Barbie",year:2023,genre:"Comedy",rating:"6.8",image:"https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",description:"Barbie sets out on a journey of self-discovery."},
- {id:9,title:"The Creator",year:2023,genre:"Sci-Fi",rating:"7.0",image:"https://image.tmdb.org/t/p/w500/vBZ0qvaRxqEhZwl6LWmruh.jpg",description:"Humanity faces a future shaped by artificial intelligence."},
- {id:10,title:"John Wick: Chapter 4",year:2023,genre:"Action",rating:"7.7",image:"https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",description:"John Wick fights powerful enemies to win his freedom."},
- {id:11,title:"Wish",year:2023,genre:"Animation",rating:"5.6",image:"https://image.tmdb.org/t/p/w500/AcoVfiv1rrWOmAdpnAMnM56ki19.jpg",description:"A young woman makes a wish that changes her world."},
- {id:12,title:"A Quiet Place: Day One",year:2024,genre:"Horror",rating:"6.3",image:"https://image.tmdb.org/t/p/w500/hU42CRk14JuPEdqZG3AWmagiPAP.jpg",description:"A woman fights to survive when terrifying creatures arrive."}
+{id:1,title:"Dune: Part Two",year:2024,genre:"Sci-Fi",rating:"8.5",image:"https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",description:"Paul Atreides joins Chani and the Fremen on an epic journey across the desert."},
+{id:2,title:"Inside Out 2",year:2024,genre:"Animation",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzLvDESC9E.jpg",description:"Riley experiences new emotions as she enters another chapter of life."},
+{id:3,title:"Deadpool & Wolverine",year:2024,genre:"Action",rating:"7.6",image:"https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",description:"Two unlikely heroes team up for a spectacular adventure."},
+{id:4,title:"Oppenheimer",year:2023,genre:"Drama",rating:"8.3",image:"https://image.tmdb.org/t/p/w500/ptpr0kGAckfQkJeJInt.jpg",description:"The story of the scientist behind the atomic bomb."},
+{id:5,title:"Spider-Man: Across the Spider-Verse",year:2023,genre:"Animation",rating:"8.6",image:"https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xjdod.jpg",description:"Miles Morales travels across the multiverse."},
+{id:6,title:"The Batman",year:2022,genre:"Action",rating:"7.8",image:"https://image.tmdb.org/t/p/w500/74xTEgt7R36Fpooo50r9T25onhq.jpg",description:"Batman investigates a mystery in Gotham City."},
+{id:7,title:"Top Gun: Maverick",year:2022,genre:"Action",rating:"8.2",image:"https://image.tmdb.org/t/p/w500/62HCnUTziyWcpDaBO2i1DX17ljH.jpg",description:"Maverick trains a new generation of pilots."},
+{id:8,title:"Barbie",year:2023,genre:"Comedy",rating:"6.8",image:"https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg",description:"Barbie sets out on a journey of self-discovery."},
+{id:9,title:"The Creator",year:2023,genre:"Sci-Fi",rating:"7.0",image:"https://image.tmdb.org/t/p/w500/vBZ0qvaRxqEhZwl6LWmruh.jpg",description:"Humanity faces a future shaped by artificial intelligence."},
+{id:10,title:"John Wick: Chapter 4",year:2023,genre:"Action",rating:"7.7",image:"https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",description:"John Wick fights powerful enemies to win his freedom."},
+{id:11,title:"Wish",year:2023,genre:"Animation",rating:"5.6",image:"https://image.tmdb.org/t/p/w500/AcoVfiv1rrWOmAdpnAMnM56ki19.jpg",description:"A young woman makes a wish that changes her world."},
+{id:12,title:"A Quiet Place: Day One",year:2024,genre:"Horror",rating:"6.3",image:"https://image.tmdb.org/t/p/w500/hU42CRk14JuPEdqZG3AWmagiPAP.jpg",description:"A woman fights to survive when terrifying creatures arrive."}
 ];
-let genre="All",saved=JSON.parse(localStorage.getItem("zeeboxSaved")||"[]"),selected=null;
 const genres=["All","Action","Comedy","Drama","Animation","Sci-Fi","Horror"];
-function categories(){
- document.getElementById("categoriesList").innerHTML=genres.map(g=>`<button class="category ${g===genre?'active':''}" onclick="setGenre('${g}')">${g}</button>`).join("");
-}
+const $=id=>document.getElementById(id);
+let genre="All",showingSaved=false,selected=null;
+function readSaved(){try{const value=JSON.parse(localStorage.getItem("zeeboxSaved")||"[]");return Array.isArray(value)?value.filter(Number.isInteger):[]}catch{return[]}}
+let saved=readSaved();
+function categories(){$("categoriesList").innerHTML=genres.map(g=>'<button type="button" class="category '+(g===genre?'active':'')+'" data-genre="'+g+'">'+g+'</button>').join("");}
+function movieCard(f){return '<article class="movie" tabindex="0" role="button" aria-label="View '+f.title+'" data-movie="'+f.id+'"><div class="poster-wrap"><img class="poster" src="'+f.image+'" alt="'+f.title+' poster" loading="lazy"><div class="poster-overlay"><span class="quick-view">View details →</span></div></div><div class="rating">★ '+f.rating+'</div><h3 title="'+f.title+'">'+f.title+'</h3><small>'+f.year+' · '+f.genre+'</small></article>'}
 function render(){
- let q=document.getElementById("search").value.toLowerCase();
- let list=films.filter(f=>(genre==="All"||f.genre===genre)&&f.title.toLowerCase().includes(q));
- document.getElementById("total").textContent=list.length+" titles";
- document.getElementById("movies").innerHTML=list.length?list.map(f=>`<article class="movie" onclick="openMovie(${f.id})"><img class="poster" src="${f.image}" alt="${f.title}" loading="lazy"><div class="rating">★ ${f.rating}</div><h3>${f.title}</h3><small>${f.year} · ${f.genre}</small></article>`).join(""):"<p>No movies found.</p>";
+ const q=$("search").value.trim().toLowerCase();
+ const list=films.filter(f=>(showingSaved?saved.includes(f.id):true)&&(genre==="All"||f.genre===genre)&&f.title.toLowerCase().includes(q));
+ $("total").textContent=list.length+(showingSaved?" saved":" titles");
+ $("movies").innerHTML=list.length?list.map(movieCard).join(""):'<div class="empty">No movies found. Try another title or genre.</div>';
 }
-function setGenre(g){genre=g;document.getElementById("sectionTitle").textContent=g==="All"?"Popular Movies":g+" Movies";categories();render();}
+function setGenre(g){genre=g;showingSaved=false;$("sectionTitle").textContent=g==="All"?"Popular Movies":g+" Movies";categories();render();}
 function openMovie(id){
- selected=films.find(f=>f.id===id);
- document.getElementById("detailImage").src=selected.image;
- document.getElementById("detailTitle").textContent=selected.title;
- document.getElementById("detailInfo").textContent=selected.year+" · "+selected.genre+" · ★ "+selected.rating;
- document.getElementById("detailDescription").textContent=selected.description;
- document.getElementById("saveButton").textContent=saved.includes(id)?"✓ Saved":"＋ My List";
- document.getElementById("trailerButton").onclick=()=>window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(selected.title+" official trailer"),"_blank");
- document.getElementById("saveButton").onclick=()=>{
-  saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];
-  localStorage.setItem("zeeboxSaved",JSON.stringify(saved));
-  document.getElementById("saveButton").textContent=saved.includes(id)?"✓ Saved":"＋ My List";
- };
- document.getElementById("modal").classList.add("show");
+ selected=films.find(f=>f.id===id);if(!selected)return;
+ $("detailImage").src=selected.image;$("detailImage").alt=selected.title+" poster";
+ $("detailTitle").textContent=selected.title;$("detailInfo").textContent=selected.year+" · "+selected.genre+" · ★ "+selected.rating;
+ $("detailDescription").textContent=selected.description;
+ $("saveButton").textContent=saved.includes(id)?"✓ Saved":"＋ My List";
+ $("modal").classList.add("show");$("closeModal").focus();
 }
-function closeMovie(){document.getElementById("modal").classList.remove("show");}
+function closeMovie(){$("modal").classList.remove("show");selected=null;}
+function toggleSaved(){
+ if(!selected)return;
+ saved=saved.includes(selected.id)?saved.filter(id=>id!==selected.id):[...saved,selected.id];
+ try{localStorage.setItem("zeeboxSaved",JSON.stringify(saved));}catch{}
+ $("saveButton").textContent=saved.includes(selected.id)?"✓ Saved":"＋ My List";
+ if(showingSaved)render();
+}
 function showSaved(){
- let list=films.filter(f=>saved.includes(f.id));
- document.getElementById("sectionTitle").textContent="My Watchlist";
- document.getElementById("total").textContent=list.length+" saved";
- document.getElementById("movies").innerHTML=list.length?list.map(f=>`<article class="movie" onclick="openMovie(${f.id})"><img class="poster" src="${f.image}"><h3>${f.title}</h3><small>${f.year}</small></article>`).join(""):"<p>Your watchlist is empty. Save a movie to add it here.</p>";
- document.getElementById("movies").scrollIntoView({behavior:"smooth"});
+ showingSaved=true;genre="All";categories();$("sectionTitle").textContent="My Watchlist";render();
+ $("movies").scrollIntoView({behavior:"smooth",block:"start"});
 }
-document.getElementById("search").addEventListener("input",render);
+$("categoriesList").addEventListener("click",e=>{const b=e.target.closest("[data-genre]");if(b)setGenre(b.dataset.genre);});
+$("movies").addEventListener("click",e=>{const card=e.target.closest("[data-movie]");if(card)openMovie(Number(card.dataset.movie));});
+$("movies").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.matches("[data-movie]")){e.preventDefault();openMovie(Number(e.target.dataset.movie));}});
+$("search").addEventListener("input",()=>{showingSaved=false;$("sectionTitle").textContent=genre==="All"?"Popular Movies":genre+" Movies";render();});
+$("exploreBtn").addEventListener("click",()=>$("movies").scrollIntoView({behavior:"smooth"}));
+$("heroListBtn").addEventListener("click",showSaved);$("myListTop").addEventListener("click",showSaved);
+$("closeModal").addEventListener("click",closeMovie);$("saveButton").addEventListener("click",toggleSaved);
+$("trailerButton").addEventListener("click",()=>{if(selected)window.open("https://www.youtube.com/results?search_query="+encodeURIComponent(selected.title+" official trailer"),"_blank","noopener,noreferrer");});
+$("modal").addEventListener("click",e=>{if(e.target===$("modal"))closeMovie();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("modal").classList.contains("show"))closeMovie();});
 categories();render();
 </script>
 </body>
